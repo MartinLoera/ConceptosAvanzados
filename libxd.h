@@ -1,32 +1,48 @@
-#include <iostream>
-#include <stdlib.h>
-#include <fstream>
-#include <string.h>
+#include <iostream> /** Libreria para usar cout y cin */
+#include <stdlib.h> /** Libreria para usar los comandos del sistema operativo. */
+#include <fstream> /**Libreria para manejar ficheros de entrada y salida. */
+#include <string.h> /** Libreria para usar cadenas de texto. */
 #include <windows.h>
 #include <cstdlib>
-#include <ctime>
+#include <ctime> /** Libreria para obtener la hora. */
 
-#define INTENTOS 3 //Numero limite de intentos para validar un input.
+#define INTENTOS 3 /** Numero limite de intentos para validar un input. */
 
 using namespace std;
 
 ifstream archivo;
 
-bool activo = true; //Variable para saber cuando termina el programa
-static int conteo; //Variable para contar el numero de intentos al validar un input.
+bool activo = true; /** Variable para saber cuando termina el programa */
+static int conteo; /** Variable para contar el numero de intentos al validar un input. */
 
-void buscar();
-void barra();
-void bye();
+void buscar(); /** Protocolo de función que busca al alumno en la base de datos. */
+void barra(); /** Protocolo de función que imprime una barra de titulo.*/
+void bye(); /** Protocolo de función para imprimir una despedida. */
 
-//Función para acceder y buscar una cadena.
+/** Se declara un nuevo tipo de variable llamado T*/
+template<typename T>
+	
+/**
+ * Una función de tipo void
+ * @param horaLocal es una variable tipo T en la que se alojara la hora según el sistema
+ * @param minutoLocal es una variable tipo T en la que se alojara el minuto según el sistema
+*/
+void Retraso(T&horaLocal, T&minutoLocal){
+		if(minutoLocal!= 0){
+			cout<<"\n\t\t\tTu clase de las "<<horaLocal<<" horas ya empezo"<<endl;
+		}
+}
+
+/** Una funcion de tipo void.
+ * Función para acceder y buscar una cadena.
+*/
 void ConsultaDB(){
 system("color A");
 int opcion;
 
 barra();
 
-string *texto = new string[4];
+string *texto = new string[4]; /** Arreglo de memoria dinamica para seleccion de opciones. */
 
 texto[0] = "\t\t\t0) Apagar sistema";
 texto[1] = "\t\t\t1) Laboratorio: LC5";
@@ -41,10 +57,11 @@ try{
 	cout<<texto[3]<<endl<<endl<<endl;
 	cout<<"\t\t\tA que sal"<<char(162)<<"n desea ingresar, escribe el numero del salon: ";
 	cin>> opcion;
-	cin.ignore();
+	cin.ignore(); /** Este comando sirve para borrar el buffer del cin. */
 	
-	delete []texto;
+	delete []texto; /** Se libera la memoria dinamica. */
 	
+	/** Switch para cada opcion del menú mostrado. */
 	switch(opcion){
 		case 0:
 			system("cls");
@@ -53,6 +70,10 @@ try{
 			bye();
 			cout<<endl<<endl<<endl;
 			cout<<"\t\t\t\t\t";
+			
+			/**
+			 * Ciclo que imprime una cuenta regresiva para salir del programa.
+			*/
 			for(int i = 10; i > 0; i--){
 				cout<<i<<"..\t";
 				Sleep(400);
@@ -97,22 +118,36 @@ try{
 	system("pause>nul");
 	}
 }
-
+/** Una funcion de tipo void.
+ * Declaración de función que busca al alumno en la base de datos.
+*/
 void buscar(){
 	
+	/**
+	 * Variables para la busqueda de alumno.
+	*/
+	int n;
 	string matricula;
 	string nombre;
-	int n;
 	string dato;
+	
+	time_t now = time(0); /** time_t es un tipo de variable capaz de representar los tiempos segun devuelto por la funcion time */
+	tm * time = localtime(&now);  /** tm es una estructura de tiempo que contiene una fecha y hora de calendario desglosada en sus componentes */
 	
 	system("cls");
 	cout<<endl<<endl<<"\t\t\tIngrese su nombre o matricula: ";
 	getline(cin,dato);
 	
-	for(int i = 0; i<dato.size(); i++){
+	/**
+	 * Ciclo para convertir de minusculas a mayusculas.
+	*/
+	for(int i = 0; i<dato.size(); i++){ 
 	    dato[i] = toupper(dato[i]);
 	}
 	
+	/**
+	 * Ciclo para guardar lo leido por la consola en una cada variable.
+	*/
 	while(!archivo.eof()){
 	
 	    getline(archivo,matricula);
@@ -142,6 +177,7 @@ void buscar(){
 		conteo = INTENTOS;
 	    cout<<endl<<endl<<"\t\t\tAccedio con exito al salon."<<endl<<endl;
 	    cout<<"\t\t\tMatricula: "<<matricula<<endl<<"\t\t\tNombre: "<<nombre;
+		Retraso(time->tm_hour, time->tm_min); /** Se invoca a la función Retraso se pasan parametros por valor */
 	    system("pause>nul");
 	}
 	else{
@@ -155,17 +191,37 @@ void buscar(){
 	archivo.close();
 }
 
+/** 
+ * Una funcion de tipo void.
+ * Declaración de función que nos permite manipular la posición en la pantalla de lo que nuestra aplicación imprima, pueden ser variables tipo char, int, etc.
+ * @param x es una variable de tipo entero que será la coordenada en x de la consola de Windows.
+ * @param y es una variable de tipo entero que será la coordenada en y de la consola de Windows.
+ * HANDLE es un identificador de un objeto o recurso unico 
+ * COORD es una estructura definida de la libreria windows.h
+ * SetConsoleCursorPosition Situa el cursor en una posicion de la cosola tomando como primer parametro el identificador de consola y el segundo la estructura de datos 
+*/
 void gotoxy(int x, int y){
 	HANDLE hcon;
 	hcon = GetStdHandle(STD_OUTPUT_HANDLE);
-	COORD dwPos;
+	COORD dwPos; 
 	dwPos.X = x;
 	dwPos.Y = y;
-	SetConsoleCursorPosition(hcon, dwPos);	
+	SetConsoleCursorPosition(hcon, dwPos);	 
 }
 
-void reloj()
-{
+/** 
+ * Una funcion de tipo void.
+ * Declaración de función que muestra la hora y el dia actual tomado directamente del sistema.
+ * time_t es un tipo de variable capaz de representar los tiempos segun devuelto por la funcion time
+ * tm es una estructura de tiempo que contiene una fecha y hora de calendario desglosada en sus componentes
+ * La estructura tm contiene nueve miemnros de tipo entero, entre ellos los que usamos tm_year(años desde 1900), tm_hour(horas desde la medianoche), 
+   tm_min(minutos después de la hora), tm_wday(días desde el domingo),tm_mday(día del mes), tm_mom(meses desde enero).
+ * El operador -> sirve para apuntar a un espaacio de memoria.
+ * dia_semana es un string con caracteres de los dias de la semana
+ * meses es un string con caracteres de los meses del año
+ * Sleep hara que la funcion se duerma durante un minuto.
+*/
+void reloj(){
 
 time_t now = time(0);
 
@@ -186,9 +242,7 @@ while(activo==true){
 				if(h<10){
 					cout << "0";
 				}
-				
-				cout << h << ":";
-				
+					cout << h << ":";
 				if(m<10){
 					cout<<"0";
 				}
@@ -199,7 +253,9 @@ while(activo==true){
 	}
 }
 
-//Función para mostrar el programa en panatalla completa.
+/** Una funcion de tipo void.
+ * Función para mostrar el programa en pantalla completa.
+*/
 void FullScreen(){
     keybd_event(VK_MENU,0x38,0,0);
     keybd_event(VK_RETURN,0x1c,0,0);
@@ -207,7 +263,9 @@ void FullScreen(){
     keybd_event(VK_MENU,0x38,KEYEVENTF_KEYUP,0);
 }
 
-//Función que imprime una barra de titulo.
+/** Una funcion de tipo void.
+ * Declaración de la funcion que imprime una barra de titulo.
+*/
 void barra(){
 	cout<<endl<<endl;
 	cout<<"\t\t\t\t\t\t\t**********************************************"<<endl;
@@ -218,7 +276,9 @@ void barra(){
 	cout<<endl;
 }
 
-//Función para imprimir una despedida.
+/**  Una funcion de tipo void.
+ * Declaración de la función para imprimir una despedida.
+*/
 void bye(){
 	cout<<"\t\t\t\t\t\t _____                                      _____"<<endl;
     cout<<"\t\t\t\t\t\t( ___ )------------------------------------( ___ )"<<endl;
@@ -228,7 +288,9 @@ void bye(){
     cout<<"\t\t\t\t\t\t(_____)------------------------------------(_____)"<<endl;
 }
 
-//Musica de espera, supuestamente navideña.
+/** Una funcion de tipo void.
+ * Funcion para la musica de espera, supuestamente navideña.
+*/
 void NavidadMusic(){
 Beep(3290,200);Beep(4930,200);Beep(6980,200);Beep(6590,300);Beep(7830,150);Beep(6980,150);Beep(6590,300);Beep(3290,50);
 Beep(4930,150);Beep(6980,150);Beep(6590,300);Beep(3920,200);Beep(4400,100); Beep(5870,150);Beep(3490,150);Beep(5870,250);
