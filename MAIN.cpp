@@ -1,16 +1,42 @@
 #include <iostream>
 #include "libxd.h"
-#include <string>
 #include <stdlib.h>
+#include <thread> 
 using namespace std;
 
 int main(){
 	
-	for(int i = 1; i<=intentos; i++){
-		ConsultaDB();
+	FullScreen();
+	thread hilo(reloj);
+	
+	conteo = INTENTOS;
+	
+	while(activo){
+		
+		if(conteo<=INTENTOS & conteo > 0){
+			
+			ConsultaDB();
+			
+		}else{
+			
+			thread Musica(NavidadMusic);
+			
+			cout<<endl<<endl<<"\t\t\t\tLimite de intentos exedidos\n\n\t\t\t\tVuelva a intentarlo m"<<char(160)<<"s tarde..."<<endl<<endl;
+			cout<<"\t\t\t\t\t";
+			for(int i = 30; i > 0; i--){
+				
+				cout<<i<<" ";
+				Sleep(500);
+			}
+			
+			conteo = INTENTOS;
+			Musica.detach();
+		}
+		
+		system("cls");
 	}
-	system("cls");
-	cout<<"Limite de intentos exedidos, me muero."<<endl;
+	
+	hilo.detach();
 	
 	return 0;
 }
