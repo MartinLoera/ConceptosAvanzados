@@ -17,6 +17,7 @@ Subprogramas : Todas las funciones que se utilizan para que funcione el programa
 •	2do Parcial
 Manejo de excepciones y eventos: Se utiliza para que sigan corriendo las funciones.
 Programación defensiva: Para que siga ejecutando el programa en caso de tener eventos inesperados.
+Templates: Se utilizó para reusar código que se implementó varias veces.
 
 •	3er Parcial
 Hilos y concurrencia – Para separar el timer de la ejecución de la búsqueda en la base de datos.
